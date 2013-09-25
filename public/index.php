@@ -6,24 +6,26 @@
 	$Session	= new TSession();
 	$Authentication = new TAuthentication();
 
+	$ControllerVars['loggedin'] = 0;	
+
 	if($Authentication->isAuthorized()) {
-		echo "You are logged in.<br />";
+		$ControllerVars['loggedin'] = 1;
 	}
 	else {
 		if($_POST['submit'] == 'Submit') {
 			if($Authentication->checkUserPass()) {
-				echo "Logged in!";
+				$ControllerVars['loggedin'] = 1;
 				$Authentication->successfulLogin();
 			}
 			else {
-				echo "Login failed!";
 				$Authentication->failedLogin();
 			}
 		}
-		else {
-			echo "You are not logged in.<br />";
-		}
+	}
 
+	echo "Login status is: ".$ControllerVars['loggedin'];
+
+	if($ControllerVars['loggedin'] == 0) {
 		$content = file_get_contents("../templates/loginform.html");
 		echo $content;
 	}
